@@ -19,13 +19,22 @@ no randomness, no input files -- standard library only.
 """
 
 import os
+from pathlib import Path
 
 FORTUNE = "Your lucky numbers are 0, 0, 0, and 0. Spend them wisely."
 
+assert FORTUNE.count("0") == 4, "fortune must name four zeroes"
+
+
+def output_path() -> Path:
+    base = os.environ.get("MAKEFUN_OUTPUT_DIR") or os.environ.get("OUTPUT_DIR") or "/output"
+    return Path(base) / "entry.txt"
+
 
 def main():
-    os.makedirs("/output", exist_ok=True)
-    with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
+    target = output_path()
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with open(target, "w", encoding="utf-8", newline="") as f:
         f.write(FORTUNE)
 
 
